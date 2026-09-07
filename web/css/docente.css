@@ -1,0 +1,548 @@
+/* ============================================================================
+ * PANEL DEL DOCENTE (docente.css)
+ * Complementa global.css. Solo lo propio de esta vista: resumen del docente,
+ * tarjetas de clase, tabla de estudiantes y ficha de detalle.
+ * ========================================================================== */
+
+/* --- Barra superior: el subtítulo no existe en el shell del estudiante --- */
+.topbar-sub {
+    margin: 1px 0 0;
+    font-size: .8rem;
+    color: var(--color-text-muted, #64748B);
+}
+
+.app-topbar .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: .85rem;
+    background: #0D5C56;
+    color: #fff;
+    flex: none;
+}
+
+/* --- Resumen en la barra lateral --- */
+.sidebar-resumen {
+    margin: 4px 16px 0;
+    padding: 14px 15px;
+    border-radius: 10px;
+    background: #F1F5F9;
+    display: grid;
+    gap: 11px;
+}
+
+.sidebar-resumen:empty { display: none; }
+
+.resumen-fila {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.resumen-fila .r-etq {
+    font-size: .72rem;
+    color: #64748B;
+    letter-spacing: .02em;
+}
+
+.resumen-fila .r-val {
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #0F172A;
+}
+
+.resumen-fila .r-val.alerta { color: #DC2626; }
+
+/* --- Miga de pan --- */
+.miga {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+    font-size: .87rem;
+    color: #64748B;
+    margin-bottom: 22px;
+    min-height: 22px;
+}
+
+.miga button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    color: #0D5C56;
+    font-weight: 600;
+}
+
+.miga button:hover { text-decoration: underline; }
+.miga i { color: #CBD5E1; font-size: .8rem; }
+
+/* --- Cabecera de sección --- */
+.cab-vista {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.cab-vista h2 {
+    margin: 0;
+    font-size: 1.32rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+}
+
+.cab-vista p {
+    margin: 3px 0 0;
+    font-size: .87rem;
+    color: #64748B;
+}
+
+/* --- Tarjetas de clase --- */
+.rejilla-clases {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+}
+
+.tarjeta-clase {
+    position: relative;
+    display: block;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 13px;
+    padding: 20px 22px 18px;
+    overflow: hidden;
+    transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+
+.tarjeta-clase::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: #14B8A6;
+}
+
+.tarjeta-clase.grave::before { background: #DC2626; }
+.tarjeta-clase.media::before { background: #D97706; }
+
+.tarjeta-clase:hover {
+    border-color: #14B8A6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -12px rgba(15, 23, 42, .25);
+}
+
+.tarjeta-clase:focus-visible {
+    outline: 2px solid #0D5C56;
+    outline-offset: 2px;
+}
+
+.tc-cabecera {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.tc-cabecera h3 {
+    margin: 0 0 3px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.tc-cabecera .tc-meta {
+    margin: 0;
+    font-size: .81rem;
+    color: #64748B;
+}
+
+.tc-nota {
+    text-align: right;
+    flex: none;
+}
+
+.tc-nota .n {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.tc-nota .n.bien { color: #047857; }
+.tc-nota .n.regular { color: #B45309; }
+.tc-nota .n.mal { color: #B91C1C; }
+
+.tc-nota .t {
+    display: block;
+    font-size: .66rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #94A3B8;
+    margin-top: 4px;
+}
+
+/* Distribución de riesgo: una barra apilada, no tres números sueltos */
+.tc-barra {
+    display: flex;
+    height: 7px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #F1F5F9;
+    margin-bottom: 9px;
+}
+
+.tc-barra span { display: block; height: 100%; }
+.tc-barra .seg-alto { background: #DC2626; }
+.tc-barra .seg-medio { background: #D97706; }
+.tc-barra .seg-bajo { background: #10B981; }
+
+.tc-leyenda {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: .77rem;
+    color: #64748B;
+}
+
+.tc-leyenda span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.tc-leyenda i {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex: none;
+}
+
+.tc-leyenda .p-alto { background: #DC2626; }
+.tc-leyenda .p-medio { background: #D97706; }
+.tc-leyenda .p-bajo { background: #10B981; }
+
+/* --- Tabla de estudiantes --- */
+.caja-tabla {
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 13px;
+    overflow: hidden;
+}
+
+.scroll-x { overflow-x: auto; }
+
+table.estudiantes {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 660px;
+    font-size: .89rem;
+}
+
+table.estudiantes th,
+table.estudiantes td {
+    text-align: left;
+    padding: 13px 20px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+table.estudiantes thead th {
+    font-size: .69rem;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: #64748B;
+    font-weight: 600;
+    background: #F8FAFC;
+    white-space: nowrap;
+}
+
+table.estudiantes tbody tr:last-child td { border-bottom: none; }
+
+table.estudiantes tbody tr {
+    cursor: pointer;
+    transition: background .12s;
+}
+
+table.estudiantes tbody tr:hover { background: #F0FDFA; }
+
+table.estudiantes td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.celda-persona {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.ini {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: .74rem;
+    font-weight: 700;
+    background: #E2E8F0;
+    color: #475569;
+    flex: none;
+}
+
+.ini.riesgo { background: #FEE2E2; color: #B91C1C; }
+
+.celda-persona .nom {
+    font-weight: 600;
+    display: block;
+    line-height: 1.25;
+}
+
+.celda-persona .sub {
+    font-size: .76rem;
+    color: #94A3B8;
+    display: block;
+}
+
+.barra-mini {
+    height: 6px;
+    width: 96px;
+    background: #E2E8F0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.barra-mini span {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: #10B981;
+}
+
+.barra-mini span.warning { background: #D97706; }
+.barra-mini span.error { background: #DC2626; }
+
+/* --- Ficha de detalle --- */
+.ficha {
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 13px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+}
+
+.ficha-cab {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.ficha-cab .ini {
+    width: 46px;
+    height: 46px;
+    font-size: 1rem;
+}
+
+.ficha-cab h2 {
+    margin: 0 0 2px;
+    font-size: 1.22rem;
+    font-weight: 700;
+}
+
+.ficha-cab p {
+    margin: 0;
+    font-size: .86rem;
+    color: #64748B;
+}
+
+/* --- Panel de predicción --- */
+.panel-riesgo {
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 13px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+}
+
+.panel-riesgo.grave { border-left: 4px solid #DC2626; }
+.panel-riesgo.media { border-left: 4px solid #D97706; }
+.panel-riesgo.leve { border-left: 4px solid #10B981; }
+
+.pr-cab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.pr-cab h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.pr-cifra {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    margin-bottom: 8px;
+}
+
+.pr-cifra .grande {
+    font-size: 2.3rem;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.pr-cifra .txt {
+    font-size: .86rem;
+    color: #64748B;
+}
+
+.medidor {
+    height: 9px;
+    background: #E2E8F0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 18px;
+}
+
+.medidor span {
+    display: block;
+    height: 100%;
+    border-radius: 5px;
+}
+
+.pr-etq {
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #64748B;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.pr-factores {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 7px;
+}
+
+.pr-factores li {
+    font-size: .87rem;
+    color: #334155;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.45;
+}
+
+.pr-factores li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: .55em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #94A3B8;
+}
+
+.nota-vista {
+    font-size: .78rem;
+    color: #94A3B8;
+    margin: 16px 0 0;
+    padding-top: 13px;
+    border-top: 1px solid #F1F5F9;
+}
+
+/* --- Informe redactado por Gemini --- */
+.informe {
+    margin-top: 16px;
+    padding: 18px 20px;
+    background: #F0FDFA;
+    border: 1px solid #99F6E4;
+    border-radius: 10px;
+}
+
+.informe .etq {
+    margin: 0 0 10px;
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #0D5C56;
+    font-weight: 700;
+}
+
+.informe p.cuerpo {
+    margin: 0 0 14px;
+    font-size: .91rem;
+    line-height: 1.6;
+    color: #134E4A;
+}
+
+.informe ul {
+    margin: 0;
+    padding-left: 20px;
+    font-size: .88rem;
+    color: #334155;
+    display: grid;
+    gap: 6px;
+}
+
+.informe .pie {
+    margin: 14px 0 0;
+    font-size: .75rem;
+    color: #64748B;
+}
+
+/* --- Estados --- */
+.cargando {
+    color: #94A3B8;
+    font-size: .89rem;
+    padding: 10px 0;
+}
+
+.aviso-error {
+    padding: 15px 17px;
+    border-radius: 10px;
+    font-size: .88rem;
+    background: #FEF2F2;
+    border: 1px solid #FCA5A5;
+    color: #B91C1C;
+}
+
+.vacio {
+    text-align: center;
+    padding: 46px 20px;
+    color: #94A3B8;
+}
+
+.vacio i {
+    font-size: 2.2rem;
+    display: block;
+    margin-bottom: 10px;
+    color: #CBD5E1;
+}
+
+@media (max-width: 640px) {
+    .cab-vista { align-items: flex-start; }
+    .pr-cifra .grande { font-size: 1.9rem; }
+}

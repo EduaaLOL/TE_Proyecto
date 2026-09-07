@@ -1,7 +1,7 @@
 /**
  * panel-docente.js — Vista del docente: clases → estudiantes → detalle.
  *
- * Tres pantallas dentro de la misma página, con una miga de pan para volver.
+ * Tres pantallas dentro de la misma página, con miga de pan para volver.
  * Todos los datos vienen de la API; no hay nada fijo en el código.
  */
 
@@ -11,13 +11,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const vista = document.getElementById("vista");
   const miga = document.getElementById("miga");
+  const resumen = document.getElementById("sidebar-resumen");
 
   document.getElementById("nombre-docente").textContent = `${usuario.nombre} ${usuario.apellido}`;
-  document.getElementById("btn-salir").addEventListener("click", () => API.cerrarSesion());
+
+  const avatar = document.getElementById("avatar-docente");
+  avatar.textContent = (usuario.nombre || "?")[0].toUpperCase();
+  avatar.title = `${usuario.nombre} ${usuario.apellido} (docente)`;
+
+  ["btn-salir", "btn-salir-top"].forEach(id =>
+    document.getElementById(id)?.addEventListener("click", () => API.cerrarSesion()));
+
+  // Guardamos las clases al cargarlas: el atajo "Estudiantes en riesgo" y el
+  // resumen lateral las reutilizan sin volver a pedirlas.
+  let clasesCache = [];
+
+  // =======================================================================
+  // Utilidades de presentación
+  // =======================================================================
+
+  function iniciales(nombre, apellido = "") {
+    return ((nombre || "?")[0] + (apellido[0] || "")).toUpperCase();
+  }
+
+  function severidad(enRiesgo, total) {
+    if (!total || !enRiesgo) return "";
+    return enRiesgo / total >= 0.4 ? "grave" : "media";
+  }
+
+  function claseDeCifra(nota) {
+    if (nota === null || nota === undefined) return "";
+    if (nota >= 80) return "bien";
+    if (nota >= 60) return "regular";
+    return "mal";
+  }
+
+  function colorRiesgo(nivel) {
+    return { ALTO: "#DC2626", MEDIO: "#D97706", BAJO: "#10B981" }[nivel] || "#94A3B8";
+  }
+
+  function nivelACaja(nivel) {
+    return { ALTO: "grave", MEDIO: "media", BAJO: "leve" }[nivel] || "leve";
+  }
 
   function pintarMiga(pasos) {
     miga.innerHTML = pasos.map((p, i) => {
-      const flecha = i > 0 ? '<i class="ph ph-caret-right" aria-hidden="true"></i>' : "";
+      const flecha = i > 0 ? '<i class="ph-bold ph-caret-right" aria-hidden="true"></i>' : "";
       return p.accion
         ? `${flecha}<button data-paso="${i}">${escapar(p.texto)}</button>`
         : `${flecha}<span>${escapar(p.texto)}</span>`;
@@ -32,104 +71,171 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function error(e) {
-    vista.innerHTML = `<div class="aviso">${escapar(e.message)}</div>`;
+    vista.innerHTML = `<div class="aviso-error">${escapar(e.message)}</div>`;
   }
 
-  function colorRiesgo(nivel) {
-    return { ALTO: "#DC2626", MEDIO: "#D97706", BAJO: "#059669" }[nivel] || "#94A3B8";
+  function marcarNav(id) {
+    document.querySelectorAll(".sidebar-nav .nav-item").forEach(n => n.classList.remove("active"));
+    document.getElementById(id)?.classList.add("active");
   }
 
   // =======================================================================
   // Pantalla 1 — Las clases del docente
   // =======================================================================
   async function verClases() {
+    marcarNav("nav-clases");
     pintarMiga([{ texto: "Mis clases" }]);
     cargando("Cargando tus clases...");
 
     try {
       const datos = await API.clasesDelDocente(usuario.id);
+      clasesCache = datos.clases;
+
+      const totalEst = datos.clases.reduce((s, c) => s + c.estudiantes, 0);
+      const totalRiesgo = datos.clases.reduce((s, c) => s + c.enRiesgo, 0);
+      const promedios = datos.clases.map(c => c.promedio).filter(p => p !== null);
+      const promGeneral = promedios.length
+        ? Math.round(promedios.reduce((a, b) => a + b, 0) / promedios.length * 10) / 10
+        : null;
+
       document.getElementById("sub-docente").textContent =
-        `${datos.clases.length} ${datos.clases.length === 1 ? "clase" : "clases"} a cargo`;
+        `${datos.clases.length} ${datos.clases.length === 1 ? "clase" : "clases"} · ${totalEst} estudiantes`;
+
+      resumen.innerHTML = `
+        <div class="resumen-fila">
+          <span class="r-etq">Promedio general</span>
+          <span class="r-val">${promGeneral ?? "—"}</span>
+        </div>
+        <div class="resumen-fila">
+          <span class="r-etq">Estudiantes</span>
+          <span class="r-val">${totalEst}</span>
+        </div>
+        <div class="resumen-fila">
+          <span class="r-etq">En riesgo</span>
+          <span class="r-val ${totalRiesgo ? "alerta" : ""}">${totalRiesgo}</span>
+        </div>`;
 
       if (!datos.clases.length) {
-        vista.innerHTML = '<p class="cargando">No tenés clases asignadas.</p>';
+        vista.innerHTML = '<div class="vacio"><i class="ph ph-books"></i>No tenés clases asignadas.</div>';
         return;
       }
 
-      vista.innerHTML = `<div class="rejilla">${datos.clases.map(c => `
-        <button class="tarjeta ${c.enRiesgo > 0 ? "alerta" : ""}" data-id="${c.id}" data-nombre="${escapar(c.nombre)}">
-          <h3>${escapar(c.nombre)}</h3>
-          <p class="meta">${c.estudiantes} ${c.estudiantes === 1 ? "estudiante" : "estudiantes"}</p>
-          <div class="cifras">
-            <span class="cifra">
-              <span class="n">${c.promedio ?? "—"}</span>
-              <span class="t">Promedio</span>
-            </span>
-            <span class="cifra">
-              <span class="n ${c.enRiesgo > 0 ? "mal" : "bien"}">${c.enRiesgo}</span>
-              <span class="t">En riesgo</span>
-            </span>
+      vista.innerHTML = `
+        <div class="cab-vista">
+          <div>
+            <h2>Mis clases</h2>
+            <p>${totalRiesgo
+              ? `${totalRiesgo} ${totalRiesgo === 1 ? "estudiante necesita" : "estudiantes necesitan"} atención`
+              : "Ningún estudiante en riesgo"}</p>
           </div>
-        </button>`).join("")}</div>`;
+        </div>
+        <div class="rejilla-clases">${datos.clases.map(tarjetaDeClase).join("")}</div>`;
 
-      vista.querySelectorAll(".tarjeta").forEach(t => {
+      vista.querySelectorAll(".tarjeta-clase").forEach(t => {
         t.addEventListener("click", () => verEstudiantes(t.dataset.id, t.dataset.nombre));
       });
     } catch (e) { error(e); }
+  }
+
+  /** Tarjeta con promedio y la distribución de riesgo como barra apilada. */
+  function tarjetaDeClase(c) {
+    const sinDatos = Math.max(0, c.estudiantes - c.enRiesgo);
+    const pctRiesgo = c.estudiantes ? (c.enRiesgo / c.estudiantes) * 100 : 0;
+
+    return `
+      <button class="tarjeta-clase ${severidad(c.enRiesgo, c.estudiantes)}"
+              data-id="${c.id}" data-nombre="${escapar(c.nombre)}">
+        <div class="tc-cabecera">
+          <div>
+            <h3>${escapar(c.nombre)}</h3>
+            <p class="tc-meta">${c.estudiantes} ${c.estudiantes === 1 ? "estudiante" : "estudiantes"}</p>
+          </div>
+          <div class="tc-nota">
+            <span class="n ${claseDeCifra(c.promedio)}">${c.promedio ?? "—"}</span>
+            <span class="t">Promedio</span>
+          </div>
+        </div>
+        <div class="tc-barra">
+          <span class="seg-alto" style="width:${pctRiesgo}%"></span>
+          <span class="seg-bajo" style="width:${100 - pctRiesgo}%"></span>
+        </div>
+        <div class="tc-leyenda">
+          <span><i class="p-alto"></i>${c.enRiesgo} en riesgo</span>
+          <span><i class="p-bajo"></i>${sinDatos} sin alertas</span>
+        </div>
+      </button>`;
   }
 
   // =======================================================================
   // Pantalla 2 — Los estudiantes de una clase, ordenados por riesgo
   // =======================================================================
   async function verEstudiantes(idClase, nombreClase) {
+    marcarNav("nav-clases");
     pintarMiga([{ texto: "Mis clases", accion: verClases }, { texto: nombreClase }]);
     cargando(`Cargando estudiantes de ${nombreClase}...`);
 
     try {
       const datos = await API.estudiantesDeClase(idClase);
-
-      const filas = datos.estudiantes.map(e => {
-        const r = e.riesgo;
-        const nota = e.notaActual;
-        return `
-        <tr class="clicable" data-est="${e.id}" data-nombre="${escapar(e.nombre + " " + e.apellido)}">
-          <td><strong>${escapar(e.nombre)} ${escapar(e.apellido)}</strong></td>
-          <td class="num">${nota ?? "—"}</td>
-          <td>
-            <div class="barra-mini">
-              <span class="${claseDeNota(nota)}" style="width:${Math.max(0, Math.min(100, nota ?? 0))}%"></span>
-            </div>
-          </td>
-          <td>${r ? `<span class="badge ${claseDeRiesgo(r.nivel)}">${r.nivel}</span>` : '<span class="badge badge-info">Sin datos</span>'}</td>
-          <td class="num">${r ? r.porcentaje + "%" : "—"}</td>
-        </tr>`;
-      }).join("");
+      const enRiesgo = datos.estudiantes.filter(e => e.riesgo && e.riesgo.nivel !== "BAJO").length;
 
       vista.innerHTML = `
-        <div class="detalle-cab">
-          <h2>${escapar(datos.clase.nombre)}</h2>
-          <p>${datos.estudiantes.length} estudiantes · ordenados por riesgo, de mayor a menor</p>
+        <div class="cab-vista">
+          <div>
+            <h2>${escapar(datos.clase.nombre)}</h2>
+            <p>${datos.estudiantes.length} estudiantes · ${enRiesgo} en riesgo · ordenados de mayor a menor</p>
+          </div>
         </div>
-        <div class="tabla-caja">
-          <table>
-            <thead>
-              <tr>
-                <th>Estudiante</th>
-                <th class="num">Nota</th>
-                <th>Avance</th>
-                <th>Riesgo</th>
-                <th class="num">Probabilidad</th>
-              </tr>
-            </thead>
-            <tbody>${filas}</tbody>
-          </table>
+        <div class="caja-tabla">
+          <div class="scroll-x">
+            <table class="estudiantes">
+              <thead>
+                <tr>
+                  <th>Estudiante</th>
+                  <th class="num">Nota</th>
+                  <th>Avance</th>
+                  <th>Riesgo</th>
+                  <th class="num">Probabilidad</th>
+                </tr>
+              </thead>
+              <tbody>${datos.estudiantes.map(filaEstudiante).join("")}</tbody>
+            </table>
+          </div>
         </div>`;
 
-      vista.querySelectorAll("tr.clicable").forEach(tr => {
+      vista.querySelectorAll("tbody tr").forEach(tr => {
         tr.addEventListener("click", () =>
           verDetalle(tr.dataset.est, tr.dataset.nombre, idClase, datos.clase.nombre));
       });
     } catch (e) { error(e); }
+  }
+
+  function filaEstudiante(e) {
+    const r = e.riesgo;
+    const nota = e.notaActual;
+    const alerta = r && r.nivel !== "BAJO";
+
+    return `
+      <tr data-est="${e.id}" data-nombre="${escapar(e.nombre + " " + e.apellido)}">
+        <td>
+          <div class="celda-persona">
+            <span class="ini ${alerta ? "riesgo" : ""}">${escapar(iniciales(e.nombre, e.apellido))}</span>
+            <span>
+              <span class="nom">${escapar(e.nombre)} ${escapar(e.apellido)}</span>
+              <span class="sub">${e.evaluadas} evaluaciones${e.aprobando === false ? " · reprobando" : ""}</span>
+            </span>
+          </div>
+        </td>
+        <td class="num"><strong>${nota ?? "—"}</strong></td>
+        <td>
+          <div class="barra-mini">
+            <span class="${claseDeNota(nota)}" style="width:${Math.max(0, Math.min(100, nota ?? 0))}%"></span>
+          </div>
+        </td>
+        <td>${r
+          ? `<span class="badge ${claseDeRiesgo(r.nivel)}">${r.nivel}</span>`
+          : '<span class="badge badge-info">Sin datos</span>'}</td>
+        <td class="num">${r ? r.porcentaje + "%" : "—"}</td>
+      </tr>`;
   }
 
   // =======================================================================
@@ -148,35 +254,41 @@ document.addEventListener("DOMContentLoaded", () => {
       const r = d.riesgo;
 
       const panelRiesgo = r ? `
-        <div class="panel-riesgo">
-          <h3>Predicción del modelo
+        <div class="panel-riesgo ${nivelACaja(r.nivel)}">
+          <div class="pr-cab">
+            <h3>Predicción del modelo</h3>
             <span class="badge ${claseDeRiesgo(r.nivel)}">Riesgo ${r.nivel}</span>
-          </h3>
+          </div>
+          <div class="pr-cifra">
+            <span class="grande" style="color:${colorRiesgo(r.nivel)}">${r.porcentaje}%</span>
+            <span class="txt">de probabilidad de reprobar el curso</span>
+          </div>
           <div class="medidor">
             <span style="width:${r.porcentaje}%;background:${colorRiesgo(r.nivel)}"></span>
           </div>
-          <p class="meta"><strong>${r.porcentaje}%</strong> de probabilidad de reprobar el curso.</p>
-          <ul>${r.factores.map(f => `<li>${escapar(f)}</li>`).join("")}</ul>
+          <p class="pr-etq">Datos que recibió el modelo</p>
+          <ul class="pr-factores">${r.factores.map(f => `<li>${escapar(f)}</li>`).join("")}</ul>
           <p class="nota-vista">
             El modelo solo usó las primeras ${r.evaluacionesVistas} evaluaciones
             (resaltadas abajo). Las demás no las vio.
           </p>
           <div id="zona-redaccion"></div>
         </div>` : `
-        <div class="panel-riesgo">
-          <h3>Sin predicción</h3>
-          <p class="meta">El modelo necesita al menos 3 evaluaciones y hay ${d.tareas.length}.</p>
+        <div class="panel-riesgo leve">
+          <div class="pr-cab"><h3>Sin predicción</h3></div>
+          <p class="cargando">El modelo necesita al menos 3 evaluaciones y hay ${d.tareas.length}.</p>
         </div>`;
 
       const filas = d.tareas.map(t => `
-        <tr class="${t.vistaPorElModelo ? "fila-vista" : ""}">
+        <tr style="${t.vistaPorElModelo ? "background:#F0FDFA" : ""}">
           <td>
             <strong>${escapar(t.nombre)}</strong>
-            ${t.vistaPorElModelo ? '<span class="badge badge-info">vista por el modelo</span>' : ""}
+            ${t.vistaPorElModelo
+              ? '<span class="badge badge-info" style="margin-left:8px">vista por el modelo</span>' : ""}
           </td>
           <td>${escapar(t.tipo || "—")}</td>
           <td class="num">${t.pesoEnLaNota ?? "—"}%</td>
-          <td class="num">${t.entregada ? t.porcentajeObtenido + "%" : "—"}</td>
+          <td class="num"><strong>${t.entregada ? t.porcentajeObtenido + "%" : "—"}</strong></td>
           <td>${formatearFecha(t.fechaLimite)}</td>
           <td>${!t.entregada
             ? '<span class="badge badge-error">No entregada</span>'
@@ -185,42 +297,131 @@ document.addEventListener("DOMContentLoaded", () => {
         </tr>`).join("");
 
       vista.innerHTML = `
-        <div class="detalle-cab">
-          <h2>${escapar(d.estudiante.nombre)} ${escapar(d.estudiante.apellido)}</h2>
-          <p>${escapar(d.clase.nombre)} · va con <strong>${d.notaActual ?? "—"}</strong> sobre 100
-             (${d.aprobando ? "aprobando" : "reprobando"})</p>
+        <div class="ficha">
+          <div class="ficha-cab">
+            <span class="ini ${r && r.nivel !== "BAJO" ? "riesgo" : ""}">${escapar(iniciales(d.estudiante.nombre, d.estudiante.apellido))}</span>
+            <div>
+              <h2>${escapar(d.estudiante.nombre)} ${escapar(d.estudiante.apellido)}</h2>
+              <p>${escapar(d.clase.nombre)} · va con <strong>${d.notaActual ?? "—"}</strong> sobre 100
+                 (${d.aprobando ? "aprobando" : "reprobando"})</p>
+            </div>
+          </div>
         </div>
         ${panelRiesgo}
-        <div class="tabla-caja">
-          <table>
-            <thead>
-              <tr>
-                <th>Evaluación</th><th>Tipo</th>
-                <th class="num">Vale</th><th class="num">Obtuvo</th>
-                <th>Fecha límite</th><th>Entrega</th>
-              </tr>
-            </thead>
-            <tbody>${filas}</tbody>
-          </table>
+        <div class="caja-tabla">
+          <div class="scroll-x">
+            <table class="estudiantes" style="min-width:720px">
+              <thead>
+                <tr>
+                  <th>Evaluación</th><th>Tipo</th>
+                  <th class="num">Vale</th><th class="num">Obtuvo</th>
+                  <th>Fecha límite</th><th>Entrega</th>
+                </tr>
+              </thead>
+              <tbody>${filas}</tbody>
+            </table>
+          </div>
         </div>`;
+
+      // Las filas de esta tabla no navegan a ningún lado
+      vista.querySelectorAll("tbody tr").forEach(tr => { tr.style.cursor = "default"; });
 
       if (r) montarRedaccion(idEst, idClase);
     } catch (e) { error(e); }
   }
 
   // =======================================================================
-  // Redacción con Gemini — opcional, y claramente separada del modelo
+  // Atajo — Todos los estudiantes en riesgo, de todas las clases
   // =======================================================================
-  // El bloque de arriba ya mostró la predicción del Random Forest. Esto solo
-  // agrega una explicación en prosa. Si no hay clave configurada, el botón ni
-  // siquiera aparece: la pantalla sigue siendo útil sin él.
+  async function verEnRiesgo() {
+    marcarNav("nav-riesgo");
+    pintarMiga([{ texto: "Mis clases", accion: verClases }, { texto: "Estudiantes en riesgo" }]);
+    cargando("Revisando todas tus clases...");
+
+    try {
+      if (!clasesCache.length) {
+        clasesCache = (await API.clasesDelDocente(usuario.id)).clases;
+      }
+
+      const porClase = await Promise.all(
+        clasesCache.map(c => API.estudiantesDeClase(c.id).catch(() => null))
+      );
+
+      const enRiesgo = [];
+      for (const datos of porClase) {
+        if (!datos) continue;
+        for (const e of datos.estudiantes) {
+          if (e.riesgo && e.riesgo.nivel !== "BAJO") {
+            enRiesgo.push({ ...e, clase: datos.clase });
+          }
+        }
+      }
+      enRiesgo.sort((a, b) => b.riesgo.probabilidad - a.riesgo.probabilidad);
+
+      if (!enRiesgo.length) {
+        vista.innerHTML = `
+          <div class="cab-vista"><div><h2>Estudiantes en riesgo</h2></div></div>
+          <div class="caja-tabla"><div class="vacio">
+            <i class="ph ph-check-circle"></i>Ningún estudiante en riesgo en tus clases.
+          </div></div>`;
+        return;
+      }
+
+      vista.innerHTML = `
+        <div class="cab-vista">
+          <div>
+            <h2>Estudiantes en riesgo</h2>
+            <p>${enRiesgo.length} en total, de todas tus clases · los más urgentes primero</p>
+          </div>
+        </div>
+        <div class="caja-tabla">
+          <div class="scroll-x">
+            <table class="estudiantes">
+              <thead>
+                <tr>
+                  <th>Estudiante</th><th>Clase</th>
+                  <th class="num">Nota</th><th>Riesgo</th><th class="num">Probabilidad</th>
+                </tr>
+              </thead>
+              <tbody>${enRiesgo.map(e => `
+                <tr data-est="${e.id}" data-nombre="${escapar(e.nombre + " " + e.apellido)}"
+                    data-clase="${e.clase.id}" data-clasenom="${escapar(e.clase.nombre)}">
+                  <td>
+                    <div class="celda-persona">
+                      <span class="ini riesgo">${escapar(iniciales(e.nombre, e.apellido))}</span>
+                      <span class="nom">${escapar(e.nombre)} ${escapar(e.apellido)}</span>
+                    </div>
+                  </td>
+                  <td>${escapar(e.clase.nombre)}</td>
+                  <td class="num"><strong>${e.notaActual ?? "—"}</strong></td>
+                  <td><span class="badge ${claseDeRiesgo(e.riesgo.nivel)}">${e.riesgo.nivel}</span></td>
+                  <td class="num">${e.riesgo.porcentaje}%</td>
+                </tr>`).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>`;
+
+      vista.querySelectorAll("tbody tr").forEach(tr => {
+        tr.addEventListener("click", () =>
+          verDetalle(tr.dataset.est, tr.dataset.nombre, tr.dataset.clase, tr.dataset.clasenom));
+      });
+    } catch (e) { error(e); }
+  }
+
+  // =======================================================================
+  // Redacción con Gemini — opcional, y separada de la predicción
+  // =======================================================================
+  // El bloque de arriba ya mostró lo que decidió el Random Forest. Esto solo
+  // agrega la explicación en prosa. Sin clave configurada el botón no aparece:
+  // la pantalla sigue siendo útil sin él.
   function montarRedaccion(idEst, idClase) {
     const zona = document.getElementById("zona-redaccion");
     if (!zona || !geminiDisponible) return;
 
     zona.innerHTML = `
-      <button class="btn btn-primary btn-sm" id="btn-redactar" style="margin-top:14px">
-        <i class="ph ph-magic-wand"></i> Redactar informe para el docente
+      <button class="btn btn-primary btn-sm" id="btn-redactar" style="margin-top:16px">
+        <i class="ph-fill ph-magic-wand"></i> Redactar informe para el docente
       </button>`;
 
     document.getElementById("btn-redactar").addEventListener("click", async (ev) => {
@@ -231,28 +432,25 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const d = await API.recomendacion(idEst, idClase);
         zona.innerHTML = `
-          <div style="margin-top:16px;padding:16px 18px;background:#F0FDFA;border:1px solid #99F6E4;border-radius:9px">
-            <p style="margin:0 0 10px;font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:#0D5C56;font-weight:600">
-              Informe redactado
-            </p>
-            <p style="margin:0 0 12px;font-size:.9rem;line-height:1.55">${escapar(d.redaccion.resumen)}</p>
-            <p style="margin:0 0 6px;font-size:.8rem;font-weight:600">Acciones sugeridas</p>
-            <ul style="margin:0;padding-left:20px;font-size:.87rem;color:#334155">
-              ${d.redaccion.acciones.map(a => `<li style="margin-bottom:4px">${escapar(a)}</li>`).join("")}
-            </ul>
-            <p style="margin:12px 0 0;font-size:.75rem;color:#64748B">
-              El nivel de riesgo lo determinó el modelo entrenado. Este texto solo lo explica.
-            </p>
+          <div class="informe">
+            <p class="etq">Informe redactado</p>
+            <p class="cuerpo">${escapar(d.redaccion.resumen)}</p>
+            <p class="pr-etq">Acciones sugeridas</p>
+            <ul>${d.redaccion.acciones.map(a => `<li>${escapar(a)}</li>`).join("")}</ul>
+            <p class="pie">El nivel de riesgo lo determinó el modelo entrenado. Este texto solo lo explica.</p>
           </div>`;
       } catch (e) {
-        zona.innerHTML = `<p style="margin-top:14px;font-size:.85rem;color:#B91C1C">${escapar(e.message)}</p>`;
+        zona.innerHTML = `<p class="aviso-error" style="margin-top:14px">${escapar(e.message)}</p>`;
       }
     });
   }
 
-  // Preguntamos una sola vez si Gemini está configurado, al arrancar.
+  // Preguntamos una sola vez si Gemini está configurado.
   let geminiDisponible = false;
   API.salud().then(s => { geminiDisponible = s.gemini; }).catch(() => {});
+
+  document.getElementById("nav-clases").addEventListener("click", verClases);
+  document.getElementById("nav-riesgo").addEventListener("click", verEnRiesgo);
 
   verClases();
 });
