@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calificaciones · Sistema Predictivo de Rendimiento Académico</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Iconos Phosphor -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/calificaciones.css">
+</head>
+
+<body>
+    <!-- Telón de fondo para menú móvil -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <div class="app-shell">
+        <!-- Sidebar -->
+        <aside class="app-sidebar">
+            <div class="sidebar-header">
+                <a href="dashboard.html" class="sidebar-brand">
+                    <div class="sidebar-logo">
+                        <i class="ph-bold ph-graduation-cap"></i>
+                    </div>
+                    <span class="sidebar-title">Aetheria</span>
+                </a>
+                <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Cerrar menú">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="ph ph-squares-four"></i> Dashboard
+                </a>
+                <a href="dashboard.html#seccion-clases" class="nav-item active">
+                    <i class="ph ph-books"></i> Mis Clases
+                </a>
+                <a href="dashboard.html#widget-calendario" class="nav-item">
+                    <i class="ph ph-calendar-blank"></i> Calendario
+                </a>
+                <div class="nav-divider"></div>
+                <a href="dashboard.html?openMl=true" class="nav-item ml-trigger">
+                    <i class="ph-fill ph-magic-wand"></i> Asistente ML
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="login.html" class="nav-item text-danger" title="Cerrar Sesión">
+                    <i class="ph ph-sign-out"></i> Cerrar Sesión
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Topbar -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menú de navegación">
+                        <i class="ph-bold ph-list"></i>
+                    </button>
+                    <div class="breadcrumb">
+                        <a href="dashboard.html" id="volver"><i class="ph-bold ph-arrow-left"></i> <span>Volver</span></a>
+                    </div>
+                </div>
+                <div class="topbar-actions">
+                    <div class="user-profile">
+                        <div class="avatar" id="avatar" title="">·</div>
+                    </div>
+                    <a href="login.html" class="btn btn-ghost btn-sm btn-logout" title="Cerrar Sesión">
+                        <i class="ph ph-sign-out"></i>
+                        <span class="logout-label">Cerrar Sesión</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Contenido de Calificaciones -->
+            <div class="app-content">
+
+                <div class="grades-header-card">
+                    <div class="grades-title">
+                        <h1>Libro de Calificaciones</h1>
+                        <p id="sub-clase">Cargando...</p>
+                    </div>
+
+                    <div class="grades-summary">
+                        <div class="summary-item">
+                            <span class="summary-label">Acumulado</span>
+                            <span class="summary-value text-warning">58<small>/100</small></span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Estado actual</span>
+                            <span class="badge badge-warning">Atención Requerida</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="grades-filters">
+                    <button class="filter-btn active" data-filter="all">Todas las actividades</button>
+                    <button class="filter-btn" data-filter="graded">Calificadas</button>
+                    <button class="filter-btn" data-filter="pending">Pendientes</button>
+                </div>
+
+                <!-- Tabla de Calificaciones -->
+                <div class="grades-table-container">
+                    <table class="grades-table">
+                        <thead>
+                            <tr>
+                                <th>Actividad</th>
+                                <th>Estado</th>
+                                <th>Fecha Límite</th>
+                                <th class="text-right">Calificación</th>
+                            </tr>
+                        </thead>
+                        <tbody id="filas-notas"></tbody>
+                    </table>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/calificaciones.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+# Backend + machine learning
+fastapi
+uvicorn[standard]
+pymongo
+python-dotenv
+
+# Modelo
+scikit-learn
+pandas
+numpy
+joblib

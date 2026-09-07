@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del Docente · Sistema Predictivo de Rendimiento Académico</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="stylesheet" href="css/global.css">
+
+    <style>
+        body {
+            margin: 0;
+            background: #F8FAFC;
+            color: #0F172A;
+            font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        }
+
+        .barra {
+            background: #fff;
+            border-bottom: 1px solid #E2E8F0;
+            padding: 14px 26px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .barra .logo {
+            width: 36px; height: 36px; border-radius: 9px;
+            background: #0D5C56; color: #fff;
+            display: grid; place-items: center; font-size: 18px; flex: none;
+        }
+
+        .barra h1 { font-size: 1rem; font-weight: 700; margin: 0; }
+        .barra .sub { font-size: .8rem; color: #64748B; margin: 1px 0 0; }
+        .barra .crece { flex: 1; }
+
+        .contenido { max-width: 1100px; margin: 0 auto; padding: 24px 26px 80px; }
+
+        .miga {
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+            font-size: .86rem; color: #64748B; margin-bottom: 20px; min-height: 22px;
+        }
+        .miga button {
+            background: none; border: none; padding: 0; cursor: pointer;
+            font: inherit; color: #0D5C56; font-weight: 600;
+        }
+        .miga button:hover { text-decoration: underline; }
+
+        .rejilla { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+        .tarjeta {
+            background: #fff; border: 1px solid #E2E8F0; border-radius: 11px;
+            padding: 18px 20px; text-align: left; font: inherit; cursor: pointer; width: 100%;
+        }
+        .tarjeta:hover { border-color: #14B8A6; }
+        .tarjeta.alerta { border-left: 3px solid #DC2626; }
+
+        .tarjeta h3 { font-size: 1rem; margin: 0 0 4px; font-weight: 600; }
+        .tarjeta .meta { font-size: .82rem; color: #64748B; margin: 0; }
+
+        .cifras { display: flex; gap: 22px; margin-top: 14px; }
+        .cifra .n {
+            font-size: 1.45rem; font-weight: 700; line-height: 1;
+            font-variant-numeric: tabular-nums; display: block;
+        }
+        .cifra .t {
+            font-size: .7rem; text-transform: uppercase; letter-spacing: .07em;
+            color: #94A3B8; display: block; margin-top: 3px;
+        }
+        .cifra .n.mal { color: #DC2626; }
+        .cifra .n.bien { color: #059669; }
+
+        .tabla-caja { background: #fff; border: 1px solid #E2E8F0; border-radius: 11px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: .89rem; }
+        th, td { text-align: left; padding: 12px 18px; border-bottom: 1px solid #F1F5F9; }
+        thead th {
+            font-size: .7rem; text-transform: uppercase; letter-spacing: .07em;
+            color: #64748B; font-weight: 600; background: #F8FAFC;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr.clicable { cursor: pointer; }
+        tbody tr.clicable:hover { background: #F0FDFA; }
+        td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+        .barra-mini { height: 6px; background: #E2E8F0; border-radius: 3px; overflow: hidden; width: 90px; }
+        .barra-mini span { display: block; height: 100%; border-radius: 3px; background: #059669; }
+        .barra-mini span.warning { background: #D97706; }
+        .barra-mini span.error { background: #DC2626; }
+
+        .aviso {
+            padding: 14px 16px; border-radius: 9px; font-size: .88rem;
+            background: #FEF2F2; border: 1px solid #FCA5A5; color: #B91C1C;
+        }
+        .cargando { color: #94A3B8; font-size: .88rem; padding: 8px 0; }
+
+        .detalle-cab {
+            background: #fff; border: 1px solid #E2E8F0; border-radius: 11px;
+            padding: 20px 22px; margin-bottom: 16px;
+        }
+        .detalle-cab h2 { margin: 0 0 3px; font-size: 1.15rem; }
+        .detalle-cab p { margin: 0; font-size: .85rem; color: #64748B; }
+
+        .panel-riesgo {
+            background: #fff; border: 1px solid #E2E8F0; border-radius: 11px;
+            padding: 20px 22px; margin-bottom: 16px;
+        }
+        .panel-riesgo h3 { margin: 0 0 12px; font-size: .95rem; }
+        .panel-riesgo ul { margin: 8px 0 0; padding-left: 20px; font-size: .87rem; color: #475569; }
+        .panel-riesgo li { margin-bottom: 4px; }
+        .medidor { height: 9px; background: #E2E8F0; border-radius: 5px; overflow: hidden; margin: 10px 0 6px; }
+        .medidor span { display: block; height: 100%; border-radius: 5px; }
+
+        .fila-vista { background: #F0FDFA; }
+        .nota-vista { font-size: .78rem; color: #64748B; margin: 10px 0 0; }
+    </style>
+</head>
+
+<body>
+    <div class="barra">
+        <div class="logo"><i class="ph-fill ph-chalkboard-teacher"></i></div>
+        <div>
+            <h1 id="nombre-docente">Panel del Docente</h1>
+            <p class="sub" id="sub-docente">Cargando...</p>
+        </div>
+        <div class="crece"></div>
+        <a href="login.html" id="btn-salir" class="btn btn-ghost btn-sm">
+            <i class="ph ph-sign-out"></i> Cerrar sesión
+        </a>
+    </div>
+
+    <div class="contenido">
+        <div class="miga" id="miga"></div>
+        <div id="vista"></div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/panel-docente.js"></script>
+</body>
+
+</html>

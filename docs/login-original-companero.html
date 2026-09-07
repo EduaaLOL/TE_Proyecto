@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Acceso seguro al Campus Virtual y Portal Académico. Inicia sesión para acceder a cursos, aulas virtuales, biblioteca digital y recursos de investigación." />
+  <meta name="theme-color" content="#0B132B" />
+  <title>Acceso al Campus Virtual · Portal Académico</title>
+
+  <!-- Tipografía Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Hoja de estilos -->
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+
+<body>
+  <!-- Contenedor Principal de la Aplicación Centrado -->
+  <main class="auth-page-wrapper">
+
+    <section class="auth-form-panel" aria-label="Formulario de Acceso">
+
+      <div class="auth-card">
+
+        <!-- Encabezado del Formulario y Marca Institucional -->
+        <header class="auth-card-header">
+          <div class="auth-brand-header">
+            <div class="auth-brand-crest" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 3L3 9L16 15L29 9L16 3Z" stroke="#0B132B" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path d="M7 10.85V21.5C7 21.5 10.5 25 16 25C21.5 25 25 21.5 25 21.5V10.85" stroke="#0B132B"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M16 15V25" stroke="#0B132B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="16" cy="19" r="2" fill="#0D5C56" />
+              </svg>
+            </div>
+            <div class="auth-brand-text">
+              <span class="auth-brand-name">Aetheria Academy</span>
+              <span class="auth-brand-badge">Campus Virtual Universitario</span>
+            </div>
+          </div>
+
+          <!-- Selector de Modos: Iniciar Sesión / Crear Cuenta -->
+          <div class="mode-tabs-container" role="tablist" aria-label="Opciones de autenticación">
+            <button type="button" id="tab-login" class="mode-tab active" role="tab" aria-selected="true"
+              aria-controls="panel-login" tabindex="0">
+              Iniciar Sesión
+            </button>
+            <button type="button" id="tab-register" class="mode-tab" role="tab" aria-selected="false"
+              aria-controls="panel-register" tabindex="-1">
+              Crear Cuenta
+            </button>
+          </div>
+        </header>
+
+        <!-- =============================================== -->
+        <!-- PANEL 1: VISTA DE INICIO DE SESIÓN             -->
+        <!-- =============================================== -->
+        <div id="panel-login" class="auth-tab-panel active" role="tabpanel" aria-labelledby="tab-login">
+
+          <div class="panel-header-text">
+            <h2 class="panel-title">Bienvenido a tu portal</h2>
+            <p class="panel-subtitle">Ingresa tus credenciales institucionales o personales para acceder a tus
+              asignaturas.</p>
+          </div>
+
+          <form id="form-login" class="auth-form" novalidate action="dashboard.html" method="get">
+
+            <!-- Campo: Correo Electrónico -->
+            <div class="form-group" id="group-login-email">
+              <div class="label-row">
+                <label for="login-email" class="form-label">Correo Electrónico</label>
+                <span class="label-hint" id="login-email-hint">Institucional o personal</span>
+              </div>
+
+              <div class="input-container">
+                <span class="input-icon-prefix" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                </span>
+
+                <input type="email" id="login-email" name="email" class="form-input"
+                  placeholder="estudiante@institucion.edu" autocomplete="email"
+                  aria-describedby="login-email-hint login-email-error" required />
+
+                <span class="input-validation-badge" id="login-email-badge" aria-hidden="true"></span>
+              </div>
+
+              <p class="form-feedback-msg" id="login-email-error" role="alert" aria-live="polite"></p>
+            </div>
+
+            <!-- Campo: Contraseña -->
+            <div class="form-group" id="group-login-password">
+              <div class="label-row">
+                <label for="login-password" class="form-label">Contraseña</label>
+                <button type="button" id="btn-forgot-password-trigger" class="link-button-forgot"
+                  aria-haspopup="dialog">
+                  ¿Olvidaste tu contraseña?
+                </button>
+              </div>
+
+              <div class="input-container">
+                <span class="input-icon-prefix" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                </span>
+
+                <input type="password" id="login-password" name="password" class="form-input"
+                  placeholder="Introduce tu contraseña segura" autocomplete="current-password"
+                  aria-describedby="login-password-error" required />
+
+                <!-- Botón Mostrar / Ocultar Contraseña -->
+                <button type="button" class="input-password-toggle" id="login-password-toggle"
+                  aria-label="Mostrar contraseña" title="Mostrar/Ocultar contraseña">
+                  <svg class="icon-eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <svg class="icon-eye-closed hidden" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                    <line x1="2" y1="2" x2="22" y2="22" />
+                  </svg>
+                </button>
+              </div>
+
+              <p class="form-feedback-msg" id="login-password-error" role="alert" aria-live="polite"></p>
+            </div>
+
+            <!-- Fila de Opciones: Guardar Correo -->
+            <div class="form-utilities-row">
+              <label class="custom-checkbox-control">
+                <input type="checkbox" id="login-remember-email" name="rememberEmail" />
+                <span class="custom-checkbox-box" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                    <path d="M13.5 4.5L6.5 11.5L3 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <span class="checkbox-text-label">Guardar mi correo en este equipo</span>
+              </label>
+            </div>
+
+            <!-- Botón Principal de Envío -->
+            <button type="submit" id="btn-submit-login" class="btn btn-primary btn-block">
+              <span class="btn-text">Acceder al Campus Virtual</span>
+              <span class="btn-spinner hidden" aria-hidden="true">
+                <svg class="spinner-svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="32"
+                    stroke-linecap="round" />
+                </svg>
+              </span>
+            </button>
+
+            <!-- Divisor de Métodos Institucionales -->
+            <div class="auth-divider" role="separator" aria-label="o ingresa con servicios institucionales">
+              <span class="divider-label">o ingresa con tu cuenta federada</span>
+            </div>
+
+            <!-- Accesos Rápidos Institucionales (SSO) -->
+            <div class="sso-buttons-grid">
+              <button type="button" class="btn btn-sso" id="btn-sso-google"
+                title="Iniciar con Google Workspace for Education">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4" />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853" />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                    fill="#FBBC05" />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                    fill="#EA4335" />
+                </svg>
+                <span>Google Workspace</span>
+              </button>
+              <button type="button" class="btn btn-sso" id="btn-sso-microsoft"
+                title="Iniciar con Microsoft 365 Educación">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <rect x="1" y="1" width="10" height="10" fill="#F25022" />
+                  <rect x="13" y="1" width="10" height="10" fill="#7FBA00" />
+                  <rect x="1" y="13" width="10" height="10" fill="#00A4EF" />
+                  <rect x="13" y="13" width="10" height="10" fill="#FFB900" />
+                </svg>
+                <span>Microsoft 365</span>
+              </button>
+            </div>
+
+          </form>
+
+          <footer class="panel-switch-footer">
+            <p class="switch-text">
+              ¿Eres nuevo estudiante o docente?
+              <button type="button" class="link-switch-tab" id="link-switch-to-register">Crear cuenta
+                académica</button>
+            </p>
+          </footer>
+
+        </div>
+
+        <!-- =============================================== -->
+        <!-- PANEL 2: VISTA DE CREAR CUENTA                 -->
+        <!-- =============================================== -->
+        <div id="panel-register" class="auth-tab-panel hidden" role="tabpanel" aria-labelledby="tab-register">
+
+          <div class="panel-header-text">
+            <h2 class="panel-title">Registro de Cuenta Académica</h2>
+            <p class="panel-subtitle">Completa los datos para dar de alta tu expediente digital en la plataforma.</p>
+          </div>
+
+          <form id="form-register" class="auth-form" novalidate>
+
+            <!-- Campo: Nombre Completo -->
+            <div class="form-group" id="group-register-name">
+              <label for="register-name" class="form-label">Nombre y Apellidos</label>
+              <div class="input-container">
+                <span class="input-icon-prefix" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </span>
+                <input type="text" id="register-name" name="name" class="form-input"
+                  placeholder="Ej. Sofía Martínez Valdés" autocomplete="name" aria-describedby="register-name-error"
+                  required />
+              </div>
+              <p class="form-feedback-msg" id="register-name-error" role="alert" aria-live="polite"></p>
+            </div>
+
+            <!-- Campo: Correo Electrónico -->
+            <div class="form-group" id="group-register-email">
+              <label for="register-email" class="form-label">Correo Electrónico Institucional / Personal</label>
+              <div class="input-container">
+                <span class="input-icon-prefix" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                </span>
+                <input type="email" id="register-email" name="email" class="form-input"
+                  placeholder="sofia.martinez@institucion.edu" autocomplete="email"
+                  aria-describedby="register-email-error" required />
+                <span class="input-validation-badge" id="register-email-badge" aria-hidden="true"></span>
+              </div>
+              <p class="form-feedback-msg" id="register-email-error" role="alert" aria-live="polite"></p>
+            </div>
+
+            <!-- Campo: Rol Académico -->
+            <div class="form-group" id="group-register-role">
+              <label for="register-role" class="form-label">Perfil Académico</label>
+              <div class="select-container">
+                <span class="input-icon-prefix" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                  </svg>
+                </span>
+                <select id="register-role" name="role" class="form-select" required>
+                  <option value="estudiante" selected>Estudiante de Grado / Posgrado</option>
+                  <option value="docente">Docente / Catedrático</option>
+                  <option value="investigador">Investigador Académico</option>
+                  <option value="personal">Personal Administrativo</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Campo: Contraseña con Medidor de Fortaleza -->
+            <div class="form-group" id="group-register-password">
+              <label for="register-password" class="form-label">Contraseña Segura</label>
+              <div class="input-container">
+                <span class="input-icon-prefix" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                </span>
+                <input type="password" id="register-password" name="password" class="form-input"
+                  placeholder="Mínimo 8 caracteres, números y símbolos" autocomplete="new-password"
+                  aria-describedby="register-password-strength register-password-error" required />
+                <button type="button" class="input-password-toggle" id="register-password-toggle"
+                  aria-label="Mostrar contraseña" title="Mostrar/Ocultar contraseña">
+                  <svg class="icon-eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <svg class="icon-eye-closed hidden" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                    <line x1="2" y1="2" x2="22" y2="22" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Indicador visual de fortaleza -->
+              <div class="password-strength-container" id="register-password-strength" aria-live="polite">
+                <div class="strength-meter-bar">
+                  <span class="strength-segment" id="strength-seg-1"></span>
+                  <span class="strength-segment" id="strength-seg-2"></span>
+                  <span class="strength-segment" id="strength-seg-3"></span>
+                  <span class="strength-segment" id="strength-seg-4"></span>
+                </div>
+                <span class="strength-label-text" id="strength-text">Seguridad: Ingresa una contraseña</span>
+              </div>
+
+              <p class="form-feedback-msg" id="register-password-error" role="alert" aria-live="polite"></p>
+            </div>
+
+            <!-- Casilla de Términos y Código de Honor -->
+            <div class="form-utilities-row">
+              <label class="custom-checkbox-control">
+                <input type="checkbox" id="register-terms" name="terms" required />
+                <span class="custom-checkbox-box" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                    <path d="M13.5 4.5L6.5 11.5L3 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <span class="checkbox-text-label">
+                  Acepto el Código de Integridad Académica y las <a href="#terminos" class="inline-link"
+                    target="_blank">Políticas de Privacidad</a>
+                </span>
+              </label>
+            </div>
+            <p class="form-feedback-msg" id="register-terms-error" role="alert" aria-live="polite"></p>
+
+            <!-- Botón de Registro -->
+            <button type="submit" id="btn-submit-register" class="btn btn-primary btn-block">
+              <span class="btn-text">Completar Registro Académico</span>
+              <span class="btn-spinner hidden" aria-hidden="true">
+                <svg class="spinner-svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="32"
+                    stroke-linecap="round" />
+                </svg>
+              </span>
+            </button>
+
+          </form>
+
+          <footer class="panel-switch-footer">
+            <p class="switch-text">
+              ¿Ya posees una cuenta registrada?
+              <button type="button" class="link-switch-tab" id="link-switch-to-login">Iniciar sesión aquí</button>
+            </p>
+          </footer>
+
+        </div>
+
+    </section>
+
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- MODAL ACCESIBLE: ¿Olvidaste tu contraseña? (Recuperación)         -->
+  <!-- ================================================================= -->
+  <div id="modal-forgot-password" class="modal-backdrop hidden" role="dialog" aria-modal="true"
+    aria-labelledby="modal-forgot-title" aria-describedby="modal-forgot-desc">
+    <div class="modal-dialog-card">
+
+      <!-- Botón de cierre del modal -->
+      <button type="button" class="modal-close-btn" id="modal-forgot-close" aria-label="Cerrar ventana de recuperación">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      <!-- Vista 1: Formulario de Solicitud de Correo -->
+      <div id="modal-forgot-view-form">
+        <div class="modal-header-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            <circle cx="12" cy="16" r="1" />
+          </svg>
+        </div>
+
+        <h3 class="modal-title" id="modal-forgot-title">Recuperación de Contraseña</h3>
+        <p class="modal-description" id="modal-forgot-desc">
+          Ingresa la dirección de correo electrónico asociada a tu cuenta institucional. Te enviaremos un enlace de un
+          solo uso para restablecer tu acceso.
+        </p>
+
+        <form id="form-forgot-password" novalidate>
+          <div class="form-group">
+            <label for="forgot-email" class="form-label">Correo Electrónico Registrado</label>
+            <div class="input-container">
+              <span class="input-icon-prefix" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                </svg>
+              </span>
+              <input type="email" id="forgot-email" name="email" class="form-input" placeholder="nombre@institucion.edu"
+                autocomplete="email" required />
+            </div>
+            <p class="form-feedback-msg" id="forgot-email-error" role="alert" aria-live="polite"></p>
+          </div>
+
+          <div class="modal-actions-group">
+            <button type="button" class="btn btn-secondary" id="modal-forgot-cancel">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-forgot">
+              <span class="btn-text">Enviar Enlace</span>
+              <span class="btn-spinner hidden" aria-hidden="true">
+                <svg class="spinner-svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="32"
+                    stroke-linecap="round" />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Vista 2: Confirmación de Envío Exitoso -->
+      <div id="modal-forgot-view-success" class="hidden">
+        <div class="modal-header-icon success-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+        </div>
+
+        <h3 class="modal-title">Instrucciones Enviadas</h3>
+        <p class="modal-description">
+          Hemos enviado un correo a <strong id="forgot-confirmed-email">tu dirección</strong> con el enlace de
+          recuperación. Revisa también tu carpeta de correo no deseado.
+        </p>
+
+        <div class="modal-countdown-box">
+          <span>¿No recibiste el correo? Puedes solicitar otro en: <strong
+              id="forgot-countdown-timer">60s</strong></span>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-block" id="modal-forgot-done-btn">
+          Regresar al Inicio de Sesión
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- CONTENEDOR DE NOTIFICACIONES TOAST (Accesible)                     -->
+  <!-- ================================================================= -->
+  <div id="toast-region" class="toast-region" role="region" aria-label="Notificaciones del sistema" aria-live="polite">
+  </div>
+
+  <!-- Script de Interactividad y Validaciones -->
+  <script src="js/login.js"></script>
+</body>
+
+</html>

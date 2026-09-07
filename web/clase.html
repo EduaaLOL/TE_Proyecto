@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clase · Sistema Predictivo de Rendimiento Académico</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Iconos Phosphor -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/clase.css">
+</head>
+
+<body>
+    <!-- Telón de fondo para menú móvil -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <div class="app-shell">
+        <!-- Sidebar -->
+        <aside class="app-sidebar">
+            <div class="sidebar-header">
+                <a href="dashboard.html" class="sidebar-brand">
+                    <div class="sidebar-logo">
+                        <i class="ph-bold ph-graduation-cap"></i>
+                    </div>
+                    <span class="sidebar-title">Aetheria</span>
+                </a>
+                <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Cerrar menú">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="ph ph-squares-four"></i> Dashboard
+                </a>
+                <a href="dashboard.html#seccion-clases" class="nav-item active">
+                    <i class="ph ph-books"></i> Mis Clases
+                </a>
+                <a href="dashboard.html#widget-calendario" class="nav-item">
+                    <i class="ph ph-calendar-blank"></i> Calendario
+                </a>
+                <div class="nav-divider"></div>
+                <a href="dashboard.html?openMl=true" class="nav-item ml-trigger">
+                    <i class="ph-fill ph-magic-wand"></i> Asistente ML
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="login.html" class="nav-item text-danger" title="Cerrar Sesión">
+                    <i class="ph ph-sign-out"></i> Cerrar Sesión
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Topbar -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menú de navegación">
+                        <i class="ph-bold ph-list"></i>
+                    </button>
+                    <div class="breadcrumb">
+                        <a href="dashboard.html"><i class="ph-bold ph-arrow-left"></i> <span>Volver a Clases</span></a>
+                    </div>
+                </div>
+                <div class="topbar-actions">
+                    <div class="user-profile">
+                        <div class="avatar" id="avatar" title="">·</div>
+                    </div>
+                    <a href="login.html" class="btn btn-ghost btn-sm btn-logout" title="Cerrar Sesión">
+                        <i class="ph ph-sign-out"></i>
+                        <span class="logout-label">Cerrar Sesión</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Contenido de la Clase -->
+            <div class="app-content">
+
+                <!-- Cabecera de la Clase -->
+                <div class="class-header-card">
+                    <div class="class-title-area">
+                        <div class="class-badge" id="badge-riesgo" hidden></div>
+                        <h1 id="nombre-clase">Cargando...</h1>
+                        <p class="class-desc" id="desc-clase"></p>
+                    </div>
+
+                    <!-- Perfil del Docente -->
+                    <div class="teacher-profile">
+                        <div class="teacher-avatar">
+                            <i class="ph-fill ph-user"></i>
+                        </div>
+                        <div class="teacher-info">
+                            <h4 id="nombre-docente">—</h4>
+                            <p>Docente de la clase</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pestañas de Navegación de Clase -->
+                <div class="class-nav-tabs">
+                    <button class="class-tab" data-target="tareas">Tareas y Entregas</button>
+                    <a href="calificaciones.html" class="class-tab link">
+                        <span>Libro de Calificaciones</span>
+                        <i class="ph-bold ph-arrow-up-right"></i>
+                    </a>
+                </div>
+
+                <!-- Tab: Contenido Didáctico -->
+                <div class="tab-content" id="tab-tareas">
+                    <div id="lista-tareas"></div>
+                </div>
+        </main>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/clase.js"></script>
+</body>
+
+</html>

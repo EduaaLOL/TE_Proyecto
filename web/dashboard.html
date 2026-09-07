@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Aetheria Academy</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Iconos Phosphor -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+    <!-- Telón de fondo para menú móvil -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <div class="app-shell">
+        <!-- Sidebar -->
+        <aside class="app-sidebar">
+            <div class="sidebar-header">
+                <a href="dashboard.html" class="sidebar-brand">
+                    <div class="sidebar-logo">
+                        <i class="ph-bold ph-graduation-cap"></i>
+                    </div>
+                    <span class="sidebar-title">Aetheria</span>
+                </a>
+                <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Cerrar menú">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active" id="nav-dashboard">
+                    <i class="ph ph-squares-four"></i> Dashboard
+                </a>
+                <a href="#seccion-clases" class="nav-item" id="nav-mis-clases">
+                    <i class="ph ph-books"></i> Mis Clases
+                </a>
+                <a href="#widget-calendario" class="nav-item" id="nav-calendario">
+                    <i class="ph ph-calendar-blank"></i> Calendario
+                </a>
+                <div class="nav-divider"></div>
+                <a href="javascript:void(0)" class="nav-item ml-trigger" id="nav-ml-trigger">
+                    <i class="ph-fill ph-magic-wand"></i> Asistente ML
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="login.html" class="nav-item text-danger" title="Cerrar Sesión">
+                    <i class="ph ph-sign-out"></i> Cerrar Sesión
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Topbar -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menú de navegación">
+                        <i class="ph-bold ph-list"></i>
+                    </button>
+                    <h1 class="topbar-title" id="saludo">Cargando...</h1>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn btn-ghost icon-btn" aria-label="Notificaciones" title="Notificaciones">
+                        <i class="ph ph-bell"></i>
+                    </button>
+                    <div class="user-profile">
+                        <div class="avatar" id="avatar" title="">·</div>
+                    </div>
+                    <a href="login.html" id="btn-salir" class="btn btn-ghost btn-sm btn-logout" title="Cerrar Sesión">
+                        <i class="ph ph-sign-out"></i>
+                        <span class="logout-label">Cerrar Sesión</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="app-content">
+                <!-- Tabs -->
+                <div class="dashboard-tabs" id="seccion-clases">
+                    <button class="tab-btn active" data-tab="actuales">Clases Actuales</button>
+                    <button class="tab-btn" data-tab="historial">Historial Académico</button>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Columna Izquierda: Clases -->
+                    <div class="grid-main-col" id="tab-actuales">
+                        <div class="section-header">
+                            <h2 id="titulo-periodo">Mis clases</h2>
+                        </div>
+                        <div class="classes-list" id="lista-clases"></div>
+                    </div>
+
+                    <!-- Pestaña Historial (Oculta por defecto) -->
+                    <div class="grid-main-col hidden" id="tab-historial">
+                        <div class="section-header">
+                            <h2>Clases Aprobadas</h2>
+                        </div>
+                        <div class="classes-list" id="lista-historial"></div>
+                    </div>
+
+                    <!-- Columna Derecha: Widgets (Calendario & ML) -->
+                    <aside class="grid-side-col">
+                        <!-- Botón ML Prominente -->
+                        <button class="ml-action-card ml-trigger" id="btn-ml-recommend">
+                            <div class="ml-action-bg"></div>
+                            <div class="ml-action-content">
+                                <div class="ml-icon-wrapper">
+                                    <i class="ph-fill ph-magic-wand"></i>
+                                </div>
+                                <div>
+                                    <h4>Asistente ML</h4>
+                                    <p>Análisis predictivo y recomendaciones</p>
+                                </div>
+                            </div>
+                        </button>
+
+                        <!-- Calendario Interactivo Real -->
+                        <div class="bento-widget calendar-widget" id="widget-calendario">
+                            <!-- Cabecera y Navegación de Meses -->
+                            <div class="calendar-widget-header">
+                                <div class="cal-title-group">
+                                    <div class="cal-icon-badge">
+                                        <i class="ph-bold ph-calendar-blank"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="cal-main-title">Calendario Académico</h3>
+                                        <p class="cal-main-subtitle">Entregas y eventos programados</p>
+                                    </div>
+                                </div>
+                                <div class="cal-nav-controls">
+                                    <button type="button" class="cal-nav-btn" id="cal-prev-btn"
+                                        aria-label="Mes anterior" title="Mes anterior">
+                                        <i class="ph-bold ph-caret-left"></i>
+                                    </button>
+                                    <span class="cal-current-label" id="cal-current-label">Octubre 2026</span>
+                                    <button type="button" class="cal-nav-btn" id="cal-next-btn"
+                                        aria-label="Mes siguiente" title="Mes siguiente">
+                                        <i class="ph-bold ph-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Encabezado de Días de la Semana -->
+                            <div class="calendar-weekdays-grid">
+                                <span class="weekday-cell">Lun</span>
+                                <span class="weekday-cell">Mar</span>
+                                <span class="weekday-cell">Mié</span>
+                                <span class="weekday-cell">Jue</span>
+                                <span class="weekday-cell">Vie</span>
+                                <span class="weekday-cell weekend">Sáb</span>
+                                <span class="weekday-cell weekend">Dom</span>
+                            </div>
+
+                            <!-- Cuadrícula de Días del Mes (Generada dinámicamente) -->
+                            <div class="calendar-month-grid" id="calendar-days-container" role="grid"
+                                aria-label="Días del mes">
+                                <!-- Se inyecta por JavaScript -->
+                            </div>
+
+                            <!-- Agenda de Actividades del Día o Mes -->
+                            <div class="calendar-day-agenda" id="calendar-day-agenda">
+                                <div class="agenda-header">
+                                    <div class="agenda-title-wrap">
+                                        <h4 id="agenda-date-title">Actividades de Octubre</h4>
+                                        <span class="badge badge-info" id="agenda-count-badge">3 entregas</span>
+                                    </div>
+                                    <button type="button" class="btn-reset-filter hidden" id="btn-reset-cal-filter">
+                                        Ver todo el mes
+                                    </button>
+                                </div>
+                                <div class="agenda-events-list" id="agenda-events-list">
+                                    <!-- Eventos renderizados dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal ML Loading & Results -->
+    <div class="modal-overlay hidden" id="ml-modal" aria-modal="true" role="dialog">
+        <div class="modal-container ml-modal-container">
+            <button class="modal-close" aria-label="Cerrar modal" id="close-ml-modal">
+                <i class="ph-bold ph-x"></i>
+            </button>
+
+            <!-- Estado 1: Cargando/Analizando -->
+            <div class="ml-state-loading" id="ml-state-loading">
+                <div class="ml-scanner">
+                    <div class="scanner-ring"></div>
+                    <div class="scanner-ring delay"></div>
+                    <i class="ph-fill ph-brain"></i>
+                </div>
+                <h3 class="ml-loading-title">Analizando rendimiento...</h3>
+                <p class="ml-loading-text" id="ml-loading-text">Revisando historial de calificaciones e identificando
+                    patrones de aprendizaje.</p>
+            </div>
+
+            <!-- Estado 2: Resultados -->
+            <div class="ml-state-results hidden" id="ml-state-results">
+                <div class="ml-results-header">
+                    <div class="ml-icon-small">
+                        <i class="ph-fill ph-magic-wand"></i>
+                    </div>
+                    <h3>Recomendaciones del Asistente ML</h3>
+                </div>
+
+                <div id="ml-resultado"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/global.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

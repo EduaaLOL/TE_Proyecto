@@ -1,0 +1,39 @@
+{
+  "modelo_elegido": "random_forest",
+  "casos_totales": 148,
+  "reprobaron": 54,
+  "variables": [
+    "promedio_parcial",
+    "tendencia",
+    "entregas_tardias",
+    "no_entregadas",
+    "puntos_acumulados"
+  ],
+  "evaluaciones_vistas_por_el_modelo": 3,
+  "nota_de_aprobacion": 60,
+  "metricas": {
+    "regresion_logistica": {
+      "exactitud": 0.8648648648648649,
+      "precision": 0.8333333333333334,
+      "exhaustividad": 0.7692307692307693,
+      "f1": 0.8,
+      "f1_validacion_cruzada_media": 0.8326725905673275,
+      "f1_validacion_cruzada_desviacion": 0.05642870379941613
+    },
+    "random_forest": {
+      "exactitud": 0.918918918918919,
+      "precision": 1.0,
+      "exhaustividad": 0.7692307692307693,
+      "f1": 0.8695652173913043,
+      "f1_validacion_cruzada_media": 0.8424031092223311,
+      "f1_validacion_cruzada_desviacion": 0.0633471076299122
+    }
+  },
+  "importancia_variables": {
+    "promedio_parcial": 0.34772399858929004,
+    "tendencia": 0.21965939777537996,
+    "entregas_tardias": 0.05766436172027965,
+    "no_entregadas": 0.032261930126649144,
+    "puntos_acumulados": 0.34269031178840115
+  }
+}

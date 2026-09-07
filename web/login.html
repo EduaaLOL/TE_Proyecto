@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso · Sistema Predictivo de Rendimiento Académico</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="stylesheet" href="css/global.css">
+
+    <style>
+        /* Acceso por ID -- pantalla propia, no reutiliza login.css porque aquel
+           esta hecho para un formulario de correo/contrasena que este sistema
+           no tiene. */
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 40px 20px;
+            background: #F8FAFC;
+            font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+            color: #0F172A;
+        }
+
+        .acceso {
+            width: 100%;
+            max-width: 560px;
+        }
+
+        .acceso-marca {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .acceso-marca .logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #0D5C56;
+            color: #fff;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            flex: none;
+        }
+
+        .acceso-marca h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.25;
+        }
+
+        .acceso-marca p {
+            font-size: .84rem;
+            color: #64748B;
+            margin: 2px 0 0;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 30px 30px 32px;
+        }
+
+        .panel h2 {
+            font-size: 1.05rem;
+            margin: 0 0 6px;
+            font-weight: 600;
+        }
+
+        .panel .sub {
+            font-size: .89rem;
+            color: #64748B;
+            margin: 0 0 22px;
+        }
+
+        .campo-id {
+            display: flex;
+            gap: 10px;
+        }
+
+        .campo-id input {
+            flex: 1;
+            min-width: 0;
+            font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+            font-size: .88rem;
+            padding: 11px 13px;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            color: #0F172A;
+            background: #fff;
+        }
+
+        .campo-id input:focus {
+            outline: 2px solid #14B8A6;
+            outline-offset: -1px;
+            border-color: #14B8A6;
+        }
+
+        .campo-id button {
+            flex: none;
+            padding: 11px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #0D5C56;
+            color: #fff;
+            font-family: inherit;
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .campo-id button:hover { background: #0A4A45; }
+        .campo-id button:disabled { opacity: .6; cursor: progress; }
+
+        .aviso {
+            margin-top: 14px;
+            padding: 11px 14px;
+            border-radius: 8px;
+            font-size: .87rem;
+            line-height: 1.45;
+        }
+
+        .aviso.error {
+            background: #FEF2F2;
+            border: 1px solid #FCA5A5;
+            color: #B91C1C;
+        }
+
+        .aviso.ok {
+            background: #ECFDF5;
+            border: 1px solid #6EE7B7;
+            color: #047857;
+        }
+
+        .separador {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 28px 0 18px;
+            font-size: .72rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: #94A3B8;
+        }
+
+        .separador::before,
+        .separador::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #E2E8F0;
+        }
+
+        .grupo-rol {
+            font-size: .72rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #64748B;
+            font-weight: 600;
+            margin: 0 0 10px;
+        }
+
+        .grupo-rol:not(:first-of-type) { margin-top: 20px; }
+
+        .usuarios {
+            display: grid;
+            gap: 8px;
+        }
+
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            width: 100%;
+            text-align: left;
+            padding: 12px 14px;
+            border: 1px solid #E2E8F0;
+            border-radius: 9px;
+            background: #fff;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .usuario:hover {
+            border-color: #14B8A6;
+            background: #F0FDFA;
+        }
+
+        .usuario .ini {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: .82rem;
+            flex: none;
+            background: #E2E8F0;
+            color: #475569;
+        }
+
+        .usuario.docente .ini { background: #0D5C56; color: #fff; }
+
+        .usuario .datos { flex: 1; min-width: 0; }
+
+        .usuario .nom {
+            font-size: .91rem;
+            font-weight: 600;
+            display: block;
+        }
+
+        .usuario .desc {
+            font-size: .79rem;
+            color: #64748B;
+            display: block;
+            margin-top: 1px;
+        }
+
+        .estado-servidor {
+            margin-top: 22px;
+            font-size: .8rem;
+            color: #94A3B8;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .punto {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #CBD5E1;
+            flex: none;
+        }
+
+        .punto.vivo { background: #059669; }
+        .punto.muerto { background: #DC2626; }
+
+        .nota-legal {
+            margin-top: 18px;
+            font-size: .78rem;
+            line-height: 1.5;
+            color: #94A3B8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="acceso">
+        <div class="acceso-marca">
+            <div class="logo"><i class="ph-fill ph-graduation-cap"></i></div>
+            <div>
+                <h1>Sistema Predictivo de Rendimiento Académico</h1>
+                <p>Acceso por identificador</p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Ingresar</h2>
+            <p class="sub">
+                Escribí el ID de un docente o de un estudiante. El sistema detecta solo
+                cuál de los dos es y te lleva a la pantalla que corresponde.
+            </p>
+
+            <form class="campo-id" id="form-acceso">
+                <input type="text" id="input-id" placeholder="6a9cd740f89babdc05b2cfa8"
+                    autocomplete="off" spellcheck="false" aria-label="ID de usuario">
+                <button type="submit" id="btn-entrar">Entrar</button>
+            </form>
+
+            <div id="aviso"></div>
+
+            <div class="separador">o probá con estos</div>
+
+            <p class="grupo-rol">Docentes</p>
+            <div class="usuarios" id="lista-docentes"></div>
+
+            <p class="grupo-rol">Estudiantes</p>
+            <div class="usuarios" id="lista-estudiantes"></div>
+
+            <div class="estado-servidor">
+                <span class="punto" id="punto-servidor"></span>
+                <span id="texto-servidor">Comprobando el servidor...</span>
+            </div>
+        </div>
+
+        <p class="nota-legal">
+            No hay contraseñas a propósito. El proyecto demuestra un modelo predictivo,
+            y un sistema de autenticación real no aportaría nada a esa demostración.
+        </p>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/login.js"></script>
+</body>
+
+</html>

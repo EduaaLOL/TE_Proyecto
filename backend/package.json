@@ -1,0 +1,14 @@
+{
+  "name": "riesgo-academico-backend",
+  "version": "1.0.0",
+  "description": "Solo el generador de datos de prueba. La API vive en app.py (Python).",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "seed": "node seed-calificaciones.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mongodb": "^6.8.0"
+  }
+}
